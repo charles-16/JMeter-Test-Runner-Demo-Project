@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'master', 
+                credentialsId: 'Git-Glue-cred', 
+                url: 'https://github.com/charles-16/JMeter-Test-Runner-Demo-Project.git'
+            }
+        }
+
+        stage('Execute JMeter Tests') {
+            steps {
+                script {
+                    // Assuming JMeter is installed on the Jenkins agent at /path/to/jmeter
+                    // Update the path to your JMX file and output directory accordingly
+                    def jmeterPath = '/path/to/jmeter'
+                    def jmxFile = 'path/to/your/test.jmx'
+                    def resultsDir = 'jmeter_results'
+                    def resultsFile = "${resultsDir}/result.jtl"
+
+                    // Create results directory
+                    sh "mkdir -p ${resultsDir}"
+
+                    // Execute JMeter test
+                    sh "${jmeterPath}/bin/jmeter -n -t ${jmxFile} -l ${resultsFile} -e -o ${resultsDir}/htmlReport"
+
+                    // Additional commands can be added here to handle the results, e.g., archiving artifacts or publishing results
+                }
+            }
+        }
+
+        stage('Publish Results') {
+            steps {
+                // Archive the JMeter result files
+                archiveArtifacts artifacts: 'jmeter_results/**', fingerprint: true
+
+                // Publish JMeter reports (assuming HTML Publisher plugin is installed)
+                publishHTML target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'jmeter_results/htmlReport',
+                    reportFiles: 'index.html',
+                    reportName: "JMeter Report"
+                ]
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up after the build
+            cleanWs()
+        }
+    }
+}
