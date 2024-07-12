@@ -34,7 +34,7 @@ pipeline {
                     sh "mkdir -p ${resultsDir}"
 
                     // Execute JMeter test
-                    sh "${jmeterPath}/bin/jmeter -n -t ${jmxFile} -l ${resultsFile} -e -o ${resultsDir}/htmlReport"
+                    sh "${jmeterPath}/jmeter -n -t ${jmxFile} -l ${resultsFile} -e -o ${resultsDir}/htmlReport"
 
                     // Additional commands can be added here to handle the results, e.g., archiving artifacts or publishing results
                 }
