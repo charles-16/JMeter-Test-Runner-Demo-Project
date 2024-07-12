@@ -13,6 +13,16 @@ pipeline {
         stage('Execute JMeter Tests') {
             steps {
                 script {
+                     // Try to find JMeter in a common directory or use an environment variable
+                    def jmeterPath = sh(script: "which jmeter || echo $JMETER_HOME", returnStdout: true).trim()
+            
+                    if (jmeterPath == '') {
+                        echo "JMeter not found. Please ensure JMeter is installed on the Jenkins agent or JMETER_HOME is set."
+                        return
+                    }
+
+                    echo "JMeter found at ${jmeterPath}"
+
                     // Assuming JMeter is installed on the Jenkins agent at /path/to/jmeter
                     // Update the path to your JMX file and output directory accordingly
                     def jmeterPath = '/opt/apache-jmeter-5.6.3/bin'
