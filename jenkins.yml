@@ -14,18 +14,18 @@ pipeline {
             steps {
                 script {
                      // Try to find JMeter in a common directory or use an environment variable
-                    def jmeterPath = sh(script: "which jmeter || echo $JMETER_HOME", returnStdout: true).trim()
+                    // def jmeterPath = sh(script: "which jmeter || echo $JMETER_HOME", returnStdout: true).trim()
             
-                    if (jmeterPath == '') {
-                        echo "JMeter not found. Please ensure JMeter is installed on the Jenkins agent or JMETER_HOME is set."
-                        return
-                    }
+                   // if (jmeterPath == '') {
+                   //     echo "JMeter not found. Please ensure JMeter is installed on the Jenkins agent or JMETER_HOME is set."
+                   //     return
+                   // }
 
-                    echo "JMeter found at ${jmeterPath}"
+                   // echo "JMeter found at ${jmeterPath}"
 
                     // Assuming JMeter is installed on the Jenkins agent at /path/to/jmeter
                     // Update the path to your JMX file and output directory accordingly
-                    // def jmeterPath = '/opt/apache-jmeter-5.6.3/bin'
+                    def jmeterPath = '/opt/apache-jmeter-5.6.3/bin'
                     def jmxFile = 'JMXTest/SwaggerPetstore.Test/JMeterTests/PetStore/Swagger Petstore.jmx'
                     def resultsDir = 'jmeter_results'
                     def resultsFile = "${resultsDir}/result.jtl"
